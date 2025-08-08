@@ -102,24 +102,4 @@ static int __init fmac_init(void) {
   return 0;
 }
 
-static void __exit fmac_exit(void) {
-  struct fmac_rule *rule;
-  struct hlist_node *tmp;
-  int bkt;
-
-  fmac_procfs_exit();
-
-  spin_lock(&fmac_lock);
-  hash_for_each_safe(fmac_rule_ht, bkt, tmp, rule, node) {
-    hash_del_rcu(&rule->node);
-    call_rcu(&rule->rcu, fmac_rule_free_rcu);
-  }
-  spin_unlock(&fmac_lock);
-
-  synchronize_rcu();
-
-  pr_info("[FMAC] File Monitoring and Access Control exited.\n");
-}
-
 module_init(fmac_init);
-module_exit(fmac_exit);

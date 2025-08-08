@@ -172,29 +172,3 @@ int fmac_procfs_init(void) {
   fmac_append_to_log("[FMAC] Procfs initialized.\n");
   return 0;
 }
-
-void fmac_procfs_exit(void) {
-  if (fmac_proc_dir) {
-    if (fmac_proc_entry) {
-      remove_proc_entry("rules", fmac_proc_dir);
-      fmac_proc_entry = NULL;
-    }
-    if (fmac_log_entry) {
-      remove_proc_entry("log", fmac_proc_dir);
-      fmac_log_entry = NULL;
-    }
-
-    remove_proc_entry("fmac", NULL);
-    fmac_proc_dir = NULL;
-  }
-
-  if (fmac_log_buffer) {
-    vfree(fmac_log_buffer);
-    fmac_log_buffer = NULL;
-    fmac_log_len = 0;
-  }
-#ifdef FMAC_ROOT
-  fmac_uid_proc_exit();
-#endif
-  pr_info("[FMAC] Procfs removed.\n");
-}
